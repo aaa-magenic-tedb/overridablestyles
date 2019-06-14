@@ -1,6 +1,5 @@
 /* eslint-disable no-undef */
 /* eslint-disable import/no-extraneous-dependencies */
-// https://next.material-ui.com/customization/themes
 import React from 'react';
 import PropTypes from 'prop-types';
 import { ThemeProvider } from '@material-ui/styles';

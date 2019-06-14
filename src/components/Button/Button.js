@@ -11,9 +11,6 @@ const styleClasses = makeStyles({
     height: '48px',
     boxShadow: 'none',
 
-    //Applying Null Coalescing with themes
-    color: props => props.styles.root.color || props.theme.palette.common.white,
-
     paddingTop: '0',
     paddingRight: '16px',
     paddingBottom: '0',
@@ -28,13 +25,16 @@ const styleClasses = makeStyles({
   },
   label: {
     fontSize: '18px',
-
+    //Applying Null Coalescing with themes
+    color: props =>
+      props.styles.label.color || props.theme.palette.common.white,
     [props => props.theme.breakpoints.up('md')]: {
       fontSize: '20px'
     }
   },
   containedPrimary: {
-    marginTop: 10,
+    marginTop: 20,
+    marginBottom: 20,
     backgroundColor: props => props.theme.palette.primary.main,
     '&:active,&:hover': {
       backgroundColor: props => props.theme.palette.primary.dark
@@ -58,6 +58,43 @@ const styleClasses = makeStyles({
       backgroundColor: props => props.theme.palette.colorVariables.TRANSPARENT,
       borderColor: props => props.theme.palette.disabled.main
     }
+  },
+  fadeUp: {
+    transform: 'translateY(-8px)'
+  },
+  iconButton: {
+    display: 'inline-block',
+    verticalAlign: `bottom`,
+    width: 48,
+    height: 48,
+    border: `1px solid ${props => props.theme.palette.colorVariables.GRAY}`,
+    borderRadius: 4,
+    backgroundColor: `${props => props.theme.palette.colorVariables.WHITE}`,
+    '&:active,&:hover': {
+      borderWidth: 1,
+      backgroundColor: `${props =>
+        props.theme.palette.colorVariables.SECONDARY_HOVER}`,
+      borderColor: `${props => props.theme.palette.colorVariables.DARKER_BLUE}`,
+      '& svg': {
+        color: `${props => props.theme.palette.primary.main}`
+      }
+    },
+    '&:disabled': {
+      background: `${props => props.theme.palette.disabled.main}`,
+      border: `none`,
+      '&:hover': {
+        backgroundColor: `${props => props.theme.palette.disabled.main}`
+      },
+      '& svg': {
+        color: `${props => props.theme.palette.colorVariables.GRAY}`
+      }
+    },
+    '&:nth-child(n+1)': {
+      marginRight: 8
+    },
+    '&:nth-child(n+2)': {
+      marginLeft: 8
+    }
   }
 });
 
@@ -70,26 +107,40 @@ const Button = props => {
     color,
     href,
     forwardedRef,
-    onClick
+    onClick,
+    fadeUp,
+    isIconButton
   } = props;
 
   const classes = styleClasses(props);
 
-  return React.createElement(
-    MUIButton,
-    {
-      className: cx('zButton', className),
-      classes: classes,
-      disabled: disabled,
-      disableRipple: true,
-      'data-quid': id,
-      color: color,
-      variant: 'contained',
-      href: href,
-      ref: forwardedRef,
-      onClick: onClick
-    },
-    children
+  return (
+    <MUIButton
+      className={cx(
+        'Button',
+        {
+          [classes.fadeUp]: fadeUp,
+          [classes.iconButton]: isIconButton
+        },
+        className
+      )}
+      classes={{
+        root: classes.root,
+        containedPrimary: classes.containedPrimary,
+        containedSecondary: classes.containedSecondary,
+        label: classes.label
+      }}
+      disabled={disabled}
+      disableRipple
+      data-quid={id}
+      color={color}
+      variant='contained'
+      href={href}
+      ref={forwardedRef}
+      onClick={onClick}
+    >
+      {children}
+    </MUIButton>
   );
 };
 
@@ -98,7 +149,8 @@ Button.defaultProps = {
   href: null,
   forwardedRef: React.createRef(),
   styles: {
-    root: {}
+    root: {},
+    label: {}
   }
 };
 
